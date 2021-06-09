@@ -34,7 +34,7 @@ module.exports.registrUser = async (req, res) => {
   if (candidates) {
     res
       .status(409)
-      .send({ message: "Такой Емейл уже занят, попробуйте другой" });
+      .send({ message: "Такой Логин уже занят, попробуйте другой" });
   } else {
     const salt = bcrypt.genSaltSync(10);
     const password = req.body.password;
@@ -42,13 +42,7 @@ module.exports.registrUser = async (req, res) => {
       user: req.body.user,
       password: bcrypt.hashSync(password, salt),
     });
-    try {
-      await user.save();
-      res.status(201).send({ message: "Вы успешно зарегистрировались" });
-    } catch (e) {
-      res
-        .status(500)
-        .send({ message: "Сервер не отвечает или что то пошло не так" });
-    }
+    await user.save();
+    res.status(201).send({ message: "Вы успешно зарегистрировались" });
   }
 };
