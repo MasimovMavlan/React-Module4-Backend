@@ -1,16 +1,19 @@
 const express = require("express");
 const router = express.Router();
 
-const {} = require("../controllers/login.controllers");
-router.get("/");
-router.post("/");
-router.patch("/");
-router.delete("/");
+const {
+  getNote,
+  createNote,
+  editNote,
+  deleteNote,
+} = require("../controllers/medical.controllers");
+router.get("/getNote", getNote);
+router.post("/createNote", createNote);
+router.patch("/editNote", editNote);
+router.delete("/deleteNote", deleteNote);
 
-const {} = require("../controllers/medical.controllers");
-router.get("/");
-router.post("/");
-router.patch("/");
-router.delete("/");
+const { registrUser, loginUser } = require("../controllers/login.controllers");
+router.post("/registr", registrUser);
+router.get("/login", loginUser);
 
 module.exports = router;

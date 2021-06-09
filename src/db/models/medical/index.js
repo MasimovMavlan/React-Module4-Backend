@@ -6,6 +6,7 @@ const medicalSchema = new Schema({
   patient: String,
   doctor: String,
   date: Date,
+  text: String,
 });
 
-module.exports = Medical.model("medical", medicalSchema);
+module.exports = Medical = mongoose.model("medical", medicalSchema);
