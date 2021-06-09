@@ -2,16 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../db/models/user/index");
 
-// module.exports.createNewUser = (req, res) => {
-//   const user = new User(req.body);
-//   user
-//     .save()
-//     .then((result) => {
-//       res.send({ data: result });
-//     })
-//     .catch((err) => res.send(`Пользователь уже существует!`));
-// };
-
 module.exports.loginUser = async (req, res) => {
   const candidate = await User.findOne({ user: req.body.user });
   if (candidate) {
@@ -28,15 +18,14 @@ module.exports.loginUser = async (req, res) => {
         "dev-jwt",
         { expiresIn: 60 * 60 }
       );
-      res.status(200).json({
+      res.status(200).send({
         token: token,
         user: candidate.user,
+        message: "Вы успешно авторизировались",
       });
     } else {
-      res.status(401).json({ message: "Пароль не верный" });
+      res.status(401).send({ message: "Пароль или Логин не верный" });
     }
-  } else {
-    res.status(404).json({ message: "Такого пользователя нет" });
   }
 };
 
@@ -45,7 +34,7 @@ module.exports.registrUser = async (req, res) => {
   if (candidates) {
     res
       .status(409)
-      .json({ message: "Такой Емейл уже занят, попробуйте другой" });
+      .send({ message: "Такой Логин уже занят, попробуйте другой" });
   } else {
     const salt = bcrypt.genSaltSync(10);
     const password = req.body.password;
@@ -53,11 +42,7 @@ module.exports.registrUser = async (req, res) => {
       user: req.body.user,
       password: bcrypt.hashSync(password, salt),
     });
-    try {
-      await user.save();
-      res.status(201).json(user);
-    } catch (e) {
-      res.send("Что то пошло не так");
-    }
+    await user.save();
+    res.status(201).send({ message: "Вы успешно зарегистрировались" });
   }
 };

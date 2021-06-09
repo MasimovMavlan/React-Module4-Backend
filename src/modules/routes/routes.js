@@ -14,6 +14,6 @@ router.delete("/deleteNote", deleteNote);
 
 const { registrUser, loginUser } = require("../controllers/login.controllers");
 router.post("/registr", registrUser);
-router.get("/login", loginUser);
+router.post("/login", loginUser);
 
 module.exports = router;
