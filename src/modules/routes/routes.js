@@ -7,10 +7,10 @@ const {
   editNote,
   deleteNote,
 } = require("../controllers/medical.controllers");
-router.get("/getNote", getNote);
+router.post("/getNote", getNote);
 router.post("/createNote", createNote);
 router.patch("/editNote", editNote);
-router.delete("/deleteNote", deleteNote);
+router.post("/deleteNote", deleteNote);
 
 const { registrUser, loginUser } = require("../controllers/login.controllers");
 router.post("/registr", registrUser);
