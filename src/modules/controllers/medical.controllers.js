@@ -18,7 +18,7 @@ module.exports.createNote = (req, res) => {
 module.exports.editNote = (req, res) => {
   const { _id } = req.body;
   Medical.updateOne({ _id }, req.body).then((result) => {
-    Medical.find().then((result) => {
+    Medical.find({ user: req.body.user }).then((result) => {
       res.send({ data: result });
     });
   });
