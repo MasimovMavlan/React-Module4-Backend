@@ -40,16 +40,17 @@ module.exports.registrUser = async (req, res) => {
   } else {
     const salt = bcrypt.genSaltSync(10);
     const password = req.body.password;
-    const user = new User({
-      user: req.body.user,
+    const { user } = req.body;
+    const newUser = new User({
+      user,
       password: bcrypt.hashSync(password, salt),
     });
 
-    await user.save();
+    await newUser.save();
 
     const token = jwt.sign(
       {
-        user: req.body.user,
+        user,
       },
       secret,
       { expiresIn: 60 * 60 }
@@ -57,7 +58,7 @@ module.exports.registrUser = async (req, res) => {
 
     res.status(201).send({
       token: token,
-      user: req.body.user,
+      user,
       message: "Вы успешно зарегистрировались",
     });
   }
