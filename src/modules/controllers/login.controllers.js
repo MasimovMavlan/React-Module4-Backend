@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../db/models/user/index");
+const secret = "dev-jwt";
 
 module.exports.loginUser = async (req, res) => {
   const candidate = await User.findOne({ user: req.body.user });
@@ -9,15 +10,16 @@ module.exports.loginUser = async (req, res) => {
       req.body.password,
       candidate.password
     );
+
     if (passwordResult) {
       const token = jwt.sign(
         {
           user: candidate.user,
-          userId: candidate._id,
         },
-        "dev-jwt",
+        secret,
         { expiresIn: 60 * 60 }
       );
+
       res.status(200).send({
         token: token,
         user: candidate.user,
@@ -38,11 +40,26 @@ module.exports.registrUser = async (req, res) => {
   } else {
     const salt = bcrypt.genSaltSync(10);
     const password = req.body.password;
-    const user = new User({
-      user: req.body.user,
+    const { user } = req.body;
+    const newUser = new User({
+      user,
       password: bcrypt.hashSync(password, salt),
     });
-    await user.save();
-    res.status(201).send({ message: "Вы успешно зарегистрировались" });
+
+    await newUser.save();
+
+    const token = jwt.sign(
+      {
+        user,
+      },
+      secret,
+      { expiresIn: 60 * 60 }
+    );
+
+    res.status(201).send({
+      token: token,
+      user,
+      message: "Вы успешно зарегистрировались",
+    });
   }
 };
